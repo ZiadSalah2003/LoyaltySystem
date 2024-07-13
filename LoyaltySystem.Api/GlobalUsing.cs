@@ -1,0 +1,12 @@
+﻿global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Mvc;
+global using System.ComponentModel.DataAnnotations;
+global using LoyaltySystem.Api.Models;
+global using Microsoft.EntityFrameworkCore;
+global using System.Security.Cryptography.X509Certificates;
+global using LoyaltySystem.Api.Data;
+global using LoyaltySystem.Api.Services;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.EntityFrameworkCore.Infrastructure;
+global using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+global using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
