@@ -1,16 +1,20 @@
 
+using Hangfire;
 using LoyaltySystem.Api.Authentication;
 using LoyaltySystem.Api.Data;
 using LoyaltySystem.Api.Repositories;
 using LoyaltySystem.Api.Services;
+using MailKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
 using System.Text;
+using Hangfire.PostgreSql;
 
 namespace LoyaltySystem.Api
 {
@@ -30,11 +34,24 @@ namespace LoyaltySystem.Api
 			builder.Services.AddSwaggerGen();
 
 			builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.SectionName));
-			//builder.Services.AddOptions<JwtOptions>().ValidateDataAnnotations().ValidateOnStart();
 
 			var jwtSettings = builder.Configuration.GetSection(JwtOptions.SectionName).Get<JwtOptions>();
 
+
+			builder.Services.AddHangfire(configuration => configuration
+			.SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+			.UseSimpleAssemblyNameTypeSerializer()
+			.UseRecommendedSerializerSettings()
+			.UsePostgreSqlStorage(builder.Configuration.GetConnectionString("HangfireConnection")));
+
+			builder.Services.AddHangfireServer();
+
+			builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+
+
+			builder.Services.AddIdentity<IdentityUser,IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 			builder.Services.AddScoped<IAdminService, AdminService>();
+			builder.Services.AddScoped<IEmailSender, EmailService>();
 			builder.Services.AddTransient(typeof(IBaseRepository<>), typeof(BaseRepository<>));
 			builder.Services.AddScoped<ICustomerService, CustomerService>();
 			builder.Services.AddScoped<IAuthService, AuthService>();
@@ -60,8 +77,6 @@ namespace LoyaltySystem.Api
 					};
 				});
 
-			builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
-
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
@@ -69,15 +84,16 @@ namespace LoyaltySystem.Api
 			{
 				app.UseSwagger();
 				app.UseSwaggerUI();
+				
 			}
 
 			app.UseHttpsRedirection();
 
+			app.UseHangfireDashboard("/jobs");
+
 			app.UseAuthorization();
 
-
 			app.MapControllers();
-
 			app.Run();
 		}
 	}
