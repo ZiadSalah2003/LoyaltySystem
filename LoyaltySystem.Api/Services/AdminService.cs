@@ -25,10 +25,10 @@ namespace LoyaltySystem.Api.Services
 			await _context.SaveChangesAsync(cancellationToken);
 			return true;
 		}
-
-		//public async Task<Customer?> GetCustomerAsync(int id, CancellationToken cancellationToken = default)
-		//{
-		//	return await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
-		//}
+		//in test
+		public async Task<Customer?> GetCustomerAsync(int id, CancellationToken cancellationToken = default)
+		{
+			return await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
+		}
 	}
 }

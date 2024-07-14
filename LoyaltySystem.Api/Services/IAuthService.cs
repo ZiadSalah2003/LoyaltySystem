@@ -1,4 +1,4 @@
-﻿using LoyaltySystem.Api.Contracts.Authentication;
+﻿
 
 namespace LoyaltySystem.Api.Services
 {

@@ -8,10 +8,10 @@
 		{
 			_context = context;
 		}
-		//public async Task<Customer?> GetCustomerAsync(int id, CancellationToken cancellationToken = default)
-		//{
-		//	return await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
-		//}
+		public async Task<Customer?> GetCustomerAsync(int id, CancellationToken cancellationToken = default)
+		{
+			return await _context.Customers.FirstOrDefaultAsync(x => x.Id == id);
+		}
 
 		public async Task<bool> UpdateAsync(int id, int point, CancellationToken cancellationToken = default)
 		{
