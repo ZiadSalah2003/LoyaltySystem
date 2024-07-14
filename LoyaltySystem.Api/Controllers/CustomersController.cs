@@ -1,6 +1,7 @@
 ﻿using LoyaltySystem.Api.Mapping;
 using LoyaltySystem.Api.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace LoyaltySystem.Api.Controllers
 {
@@ -11,13 +12,16 @@ namespace LoyaltySystem.Api.Controllers
 	{
 		private readonly ICustomerService _customerService;
 		private readonly IBaseRepository<Customer> _baseRepository;
+		
 		public CustomersController(ICustomerService customerService, IBaseRepository<Customer> baseRepository)
 		{
 			_customerService = customerService;
 			_baseRepository = baseRepository;
+
 		}
-		[Authorize]
+		
 		[HttpGet("{id}")]
+		[Authorize]
 		public async Task<IActionResult> GetCustomer([FromRoute] int id, CancellationToken cancellationToken)
 		{
 			var item = await _baseRepository.GetCustomerAsync(id, cancellationToken);
